@@ -2,9 +2,8 @@ const crypto = require('crypto');
 const authMiddleware = require('express-basic-auth-safe');
 const debug = require('diagnostics')('authboot');
 
-module.exports = function (opts) {
-  opts = opts || {}
-  return function (app, options, callback) {
+module.exports = function (opts = {}) {
+  return function (app, options = {}, callback) {
     const users = new Map(
       Object.entries(opts.users
         || options.users

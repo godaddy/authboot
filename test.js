@@ -4,10 +4,9 @@ const authboot = require('./');
 
 describe('authboot.test', function () {
 
-  function setupApp(opts) {
-    opts = opts || {};
+  function setupApp(opts = { config: {} }) {
     const app = new Map();
-    app.config = new nconf.Provider(opts.config || {});
+    app.config = new nconf.Provider(opts.config);
     return app;
   }
 
