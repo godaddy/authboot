@@ -5,10 +5,27 @@ const debug = require('diagnostics')('authboot');
 module.exports = function (opts) {
   opts = opts || {}
   return function (app, options, callback) {
-    const users = new Map(Object.entries(opts.users || options.users || app.config.get('auth:users') || {}));
-    const realm = opts.realm || options.realm || app.config.get('auth:realm');
-    const challenge = opts.challenge || options.challenge || app.config.get('auth:challenge');
-    const unauthorizedResponse = opts.errorPayload || options.errorPayload || app.config.get('auth:erroPayload') || { error: 'Not authorized' }
+    const users = new Map(
+      Object.entries(opts.users
+        || options.users
+        || app.config.get('auth:users')
+        || {}
+      )
+    );
+
+    const realm = opts.realm
+      || options.realm
+      || app.config.get('auth:realm');
+
+    const challenge = opts.challenge
+      || options.challenge
+      || app.config.get('auth:challenge');
+
+    const unauthorizedResponse = opts.errorPayload
+      || options.errorPayload
+      || app.config.get('auth:erroPayload')
+      || { error: 'Not authorized' }
+
     const lookupOpt = typeof opts.lookup === 'function' ? opts.lookup : null;
 
     if (challenge && !realm) {
