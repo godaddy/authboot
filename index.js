@@ -9,13 +9,14 @@ module.exports = function (opts) {
     const realm = opts.realm || options.realm || app.config.get('auth:realm');
     const challenge = opts.challenge || options.challenge || app.config.get('auth:challenge');
     const unauthorizedResponse = opts.errorPayload || options.errorPayload || app.config.get('auth:erroPayload') || { error: 'Not authorized' }
+    const lookupOpt = typeof opts.lookup === 'function' ? opts.lookup : null;
 
     if (challenge && !realm) {
       return callback(new Error('authboot requires a specified realm if a challenge request will be sent.'));
     }
 
     app.authboot = {};
-    const lookup = app.authboot.lookup = opts.lookup || ({ name, password }, callback) {
+    const lookup = app.authboot.lookup = (lookupOpt || function ({ name, password }, callback) {
       const pass = users.get(name);
       if (!compare(pass, password)) {
         debug('Invalid password for valid username %s', name);
@@ -24,7 +25,7 @@ module.exports = function (opts) {
         return callback(error);
       }
       return callback(null, true);
-    };
+    })
     app.authboot.middleware = authMiddleware({
       authorizer: (name, password, cb) => lookup({ name, password }, cb),
       unauthorizedResponse,
