@@ -7,7 +7,10 @@ slay applications without duplicating code unnecessarily.
 
 
 ## install
-`npm install authboot --save`
+
+```sh
+npm install authboot --save
+```
 
 ## usage
 
