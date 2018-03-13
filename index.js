@@ -22,7 +22,7 @@ module.exports = function (opts = {}) {
 
     const unauthorizedResponse = opts.errorPayload
       || options.errorPayload
-      || app.config.get('auth:erroPayload')
+      || app.config.get('auth:errorPayload')
       || { error: 'Not authorized' }
 
     const lookupOpt = typeof opts.lookup === 'function' ? opts.lookup : null;
