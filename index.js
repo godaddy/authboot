@@ -20,9 +20,9 @@ module.exports = function (opts = {}) {
       || options.challenge
       || app.config.get('auth:challenge');
 
-    const unauthorizedResponse = opts.errorPayload
-      || options.errorPayload
-      || app.config.get('auth:errorPayload')
+    const unauthorizedResponse = opts.unauthorizedResponse
+      || options.unauthorizedResponse
+      || app.config.get('auth:unauthorizedResponse')
       || { error: 'Not authorized' }
 
     const lookupOpt = typeof opts.lookup === 'function' ? opts.lookup : null;
