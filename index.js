@@ -34,7 +34,7 @@ module.exports = function (opts = {}) {
     app.authboot = {};
     const lookup = app.authboot.lookup = (lookupOpt || function ({ name, password }, callback) {
       const pass = users.get(name);
-      if (!compare(pass, password)) {
+      if (!pass || !compare(pass, password)) {
         debug('Invalid password for valid username %s', name);
         const error = new Error('Invalid password for given username');
         error.status = 401;
@@ -52,6 +52,8 @@ module.exports = function (opts = {}) {
     callback();
   }
 };
+
+module.exports.compare = compare;
 
 function compare(a, b) {
   try {

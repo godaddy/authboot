@@ -20,7 +20,7 @@ npm install authboot --save
 
 ## API
 
-### `lookup({ user, password }, callback)`
+### `lookup({ name, password }, callback)`
 
 Function to override the default behavior of using the `users` object as
 a direct comparison map for who is authorized.

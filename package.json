@@ -13,7 +13,7 @@
     "express",
     "http"
   ],
-  "author": "GoDaddy Engineers",
+  "author": "GoDaddy Operating Company LLC",
   "license": "MIT",
   "dependencies": {
     "diagnostics": "^1.1.0",
