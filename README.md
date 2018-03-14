@@ -18,7 +18,6 @@ below.
 npm install authboot --save
 ```
 
-
 ## API
 
 ### `lookup({ user, password }, callback)`

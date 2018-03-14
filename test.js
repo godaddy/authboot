@@ -33,8 +33,7 @@ describe('authboot.test', function () {
 
   it('should handle a custom lookup function', function (done) {
     authboot({
-      lookup: ({ name, password }, callback) => {
-      }
+      lookup: ({ name, password }, callback) => {}
     })(app, {}, (err) => {
       assume(err).is.falsey();
       assume(app.authboot.middleware).is.a('function');
