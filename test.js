@@ -70,7 +70,7 @@ describe('authboot.test', function () {
       let one = process.hrtime(d);
 
       let dd = process.hrtime();
-      authboot.compare('whatthehellinthename', 'whatthehellinthexame');
+      authboot.compare('whatthehellinthename', 'hatthehellinthexame');
       let two = process.hrtime(dd);
 
       assume(one[0]).equals(two[0]);
