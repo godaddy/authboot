@@ -51,7 +51,7 @@ The realm given for the service for browser storage of basic auth.
 module.exports = function (app, opts, callback) {
   app.preboot(require('authboot')({
     users: {
-      name: 'bcryptHashOfPAssword'
+      name: 'bcryptHashOfPassword'
     },
     // send challenge request for browser auth
     challenge: true,

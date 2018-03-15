@@ -37,7 +37,8 @@ module.exports = function (opts = {}) {
       if (!hash) return callback(null, false);
 
       bcrypt.compare(password, hash, callback);
-    })
+    });
+
     app.authboot.middleware = authMiddleware({
       authorizer: (name, password, cb) => lookup({ name, password }, cb),
       unauthorizedResponse,
