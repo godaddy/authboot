@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha",
+    "eslint": "eslint-godaddy --fix -c .eslintrc ./*.js",
+    "pretest": "npm run eslint",
     "test-travis": "nyc --reporter=lcov mocha"
   },
   "keywords": [
@@ -22,6 +24,10 @@
   },
   "devDependencies": {
     "assume": "^1.5.2",
+    "eslint": "^4.18.2",
+    "eslint-config-godaddy": "^2.1.0",
+    "eslint-plugin-json": "^1.2.0",
+    "eslint-plugin-mocha": "^4.12.1",
     "mocha": "^5.0.4",
     "nconf": "^0.10.0",
     "nyc": "^11.6.0"

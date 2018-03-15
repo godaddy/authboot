@@ -23,7 +23,7 @@ module.exports = function (opts = {}) {
     const unauthorizedResponse = opts.unauthorizedResponse
       || options.unauthorizedResponse
       || app.config.get('auth:unauthorizedResponse')
-      || { error: 'Not authorized' }
+      || { error: 'Not authorized' };
 
     const lookupOpt = typeof opts.lookup === 'function' ? opts.lookup : null;
 
@@ -34,8 +34,10 @@ module.exports = function (opts = {}) {
     app.authboot = {};
     const lookup = app.authboot.lookup = (lookupOpt || function ({ name, password }, callback) {
       const hash = users.get(name);
-      if (!hash) return callback(null, false);
-
+      if (!hash) {
+        debug(`unknown username ${name}`);
+        return callback(null, false);
+      }
       bcrypt.compare(password, hash, callback);
     });
 
@@ -48,5 +50,5 @@ module.exports = function (opts = {}) {
     });
 
     callback();
-  }
+  };
 };
