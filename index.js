@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const authMiddleware = require('express-basic-auth-safe');
 const debug = require('diagnostics')('authboot');
 
@@ -33,32 +33,19 @@ module.exports = function (opts = {}) {
 
     app.authboot = {};
     const lookup = app.authboot.lookup = (lookupOpt || function ({ name, password }, callback) {
-      const pass = users.get(name);
-      if (!pass || !compare(pass, password)) {
-        debug('Invalid password for valid username %s', name);
-        const error = new Error('Invalid password for given username');
-        error.status = 401;
-        return callback(error);
-      }
-      return callback(null, true);
+      const hash = users.get(name);
+      if (!hash) return callback(null, false);
+
+      bcrypt.compare(password, hash, callback);
     })
     app.authboot.middleware = authMiddleware({
       authorizer: (name, password, cb) => lookup({ name, password }, cb),
       unauthorizedResponse,
       authorizeAsync: true,
+      challenge,
       realm
     });
 
     callback();
   }
 };
-
-module.exports.compare = compare;
-
-function compare(a, b) {
-  try {
-    return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b))
-  } catch(ex) {
-    return false;
-  }
-}
