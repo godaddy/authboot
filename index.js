@@ -32,15 +32,23 @@ module.exports = function (opts = {}) {
     }
 
     app.authboot = {};
-    const lookup = app.authboot.lookup = (lookupOpt || function ({ name, password }, callback) {
-      const hash = users.get(name);
-      if (!hash) {
-        debug(`unknown username ${name}`);
-        return callback(null, false);
-      }
-      bcrypt.compare(password, hash, callback);
-    });
+    let lookup = lookupOpt;
 
+    // If we have nothing to authenticate against then we will noop
+    if (!lookup && !users.size) {
+      lookup = (_, callback) => callback(null, true);
+    } else {
+      lookup = ({ name, password }, callback) => {
+        const hash = users.get(name);
+        if (!hash) {
+          debug(`unknown username ${name}`);
+          return callback(null, false);
+        }
+        bcrypt.compare(password, hash, callback);
+      };
+    }
+
+    app.authboot.lookup = lookup;
     app.authboot.middleware = authMiddleware({
       authorizer: (name, password, cb) => lookup({ name, password }, cb),
       unauthorizedResponse,
