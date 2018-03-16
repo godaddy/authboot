@@ -37,7 +37,7 @@ module.exports = function (opts = {}) {
     // If we have nothing to authenticate against then we will noop
     if (!lookup && !users.size) {
       lookup = (_, callback) => callback(null, true);
-    } else {
+    } else if (!lookup) {
       lookup = ({ name, password }, callback) => {
         const hash = users.get(name);
         if (!hash) {
