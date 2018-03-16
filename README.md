@@ -1,5 +1,7 @@
 # authboot
 
+[![Build Status](https://travis-ci.org/warehouseai/authboot.svg?branch=master)](https://travis-ci.org/warehouseai/authboot)
+
 A simple [`slay`][slay] preboot that initializes an `authboot` namespaced `lookup` function
 and `middeware` on the app object to be used within the application. Its meant
 to wrap up some configuration conventions to be more easily reused in multiple
