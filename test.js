@@ -5,6 +5,8 @@ const authboot = require('./');
 
 describe('authboot.test', function () {
 
+  const defaultOpts = { users: { what: 'hash' }};
+
   function setupApp(opts = { config: {}}) {
     const app = new Map();
     app.config = new nconf.Provider(opts.config);
@@ -17,7 +19,7 @@ describe('authboot.test', function () {
   });
 
   it('should setup middleware and lookup functions on authboot namespace on app object', function (done) {
-    authboot()(app, {}, (err) => {
+    authboot(defaultOpts)(app, {}, (err) => {
       assume(err).is.falsey();
       assume(app.authboot.middleware).is.a('function');
       assume(app.authboot.lookup).is.a('function');
@@ -29,10 +31,18 @@ describe('authboot.test', function () {
   it('should return an error in the callback if challenge and realm are not both defined together', function (done) {
     authboot({ challenge: true })(app, {}, (err) => {
       assume(err).is.truthy();
+      assume(err.message).includes('realm');
       done();
     });
   });
 
+  it('should return an error in the callback if no users are defined and no lookup function', function (done) {
+    authboot()(app, {}, (err) => {
+      assume(err).is.truthy();
+      assume(err.message).includes('authentication');
+      done();
+    });
+  });
   it('should handle a custom lookup function', function (done) {
     authboot({
       lookup: (_, callback) => {

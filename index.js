@@ -31,6 +31,10 @@ module.exports = function (opts = {}) {
       return callback(new Error('authboot requires a specified realm if a challenge request will be sent.'));
     }
 
+    if (!users.size && !lookupOpt) {
+      return callback(new Error('authboot requires custom lookup function or users object for authentication'));
+    }
+
     app.authboot = {};
     const lookup = app.authboot.lookup = (lookupOpt || function ({ name, password }, callback) {
       const hash = users.get(name);
