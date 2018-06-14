@@ -22,7 +22,6 @@
   "author": "GoDaddy Operating Company LLC",
   "license": "MIT",
   "dependencies": {
-    "bcrypt": "^1.0.3",
     "diagnostics": "^1.1.0",
     "express-basic-auth-safe": "^1.1.4"
   },

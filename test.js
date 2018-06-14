@@ -1,5 +1,5 @@
 const assume = require('assume');
-const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const nconf = require('nconf');
 const authboot = require('./');
 
@@ -60,21 +60,121 @@ describe('authboot.test', function () {
     });
   });
 
+  it('app.authboot.lookup by default should correctly fail on unknown user', function (done) {
+    authboot({ users: { what: '00'  }})(app, {}, (err) => {
+      assume(err).is.falsey();
+      assume(app.authboot.middleware).is.a('function');
+      assume(app.authboot.lookup).is.a('function');
+
+      app.authboot.lookup({ name: 'who', password: '00' }, (err, valid) => {
+        assume(err).is.falsey();
+        assume(valid).is.falsey();
+        done();
+      });
+    });
+  });
+
   it('app.authboot.lookup by default should correctly validate from user object', function (done) {
     const password = 'huh';
-    bcrypt.hash(password, 10, (err, hash) => {
+    const hash = crypto.createHash('sha256');
+    hash.update(password);
+    const digest = hash.digest('hex');
+    authboot({ users: { what: digest  }})(app, {}, (err) => {
       assume(err).is.falsey();
-      authboot({ users: { what: hash  }})(app, {}, (err) => {
-        assume(err).is.falsey();
-        assume(app.authboot.middleware).is.a('function');
-        assume(app.authboot.lookup).is.a('function');
+      assume(app.authboot.middleware).is.a('function');
+      assume(app.authboot.lookup).is.a('function');
 
-        app.authboot.lookup({ name: 'what', password: 'huh' }, (err, valid) => {
-          assume(err).is.falsey();
-          assume(valid).is.truthy();
-          done();
-        });
+      app.authboot.lookup({ name: 'what', password: 'huh' }, (err, valid) => {
+        assume(err).is.falsey();
+        assume(valid).is.truthy();
+        done();
       });
+    });
+  });
+
+  it('app.authboot.lookup by default should coalesce concurrent lookups', function (done) {
+    const password = 'huh';
+    const hash = crypto.createHash('sha256');
+    hash.update(password);
+    const digest = hash.digest('hex');
+    authboot({ users: { what: digest  }})(app, {}, (err) => {
+      assume(err).is.falsey();
+      assume(app.authboot.middleware).is.a('function');
+      assume(app.authboot.lookup).is.a('function');
+
+      const responses = Array.from({ length: 10 }, () => {
+        let f, r;
+        const p = new Promise((_f, _r) => {
+          f = _f;
+          r = _r;
+        });
+        setTimeout(() => {
+          app.authboot.lookup({ name: 'what', password: 'huh' }, (err, valid) => {
+            try {
+              assume(err).is.falsey();
+              assume(valid).is.truthy();
+              f();
+            } catch (e) {
+              r(e);
+            }
+          });
+        }, 0);
+        return p;
+      });
+      Promise.all(responses).then(
+        () => done(),
+        (e) => done(e)
+      );
+    });
+  });
+
+  it('app.authboot.lookup by default should fail on brute force heuristic', function (done) {
+    // default max concurrents is 4
+    const password = '5';
+    const hash = crypto.createHash('sha256');
+    hash.update(password);
+    const digest = hash.digest('hex');
+    authboot({ users: { what: digest  }})(app, {}, (err) => {
+      assume(err).is.falsey();
+      assume(app.authboot.middleware).is.a('function');
+      assume(app.authboot.lookup).is.a('function');
+
+      const responses = Array.from({ length: 6 }, (_, i) => {
+        let f, r;
+        const p = new Promise((_f, _r) => {
+          f = _f;
+          r = _r;
+        });
+        setTimeout(() => {
+          app.authboot.lookup({ name: 'what', password: `${i}` }, (err, valid) => {
+            try {
+              assume(err).is.falsey();
+              assume(valid).is.falsey();
+              f();
+            } catch (e) {
+              r(e);
+            }
+          });
+        }, 0);
+        return p;
+      });
+      responses.push(new Promise(async (f, r) => {
+        await Promise.all(responses);
+        app.authboot.lookup({ name: 'what', password: '5' }, (err, valid) => {
+          try {
+            assume(err).is.falsey();
+            assume(valid).is.truthy();
+            f();
+          } catch (e) {
+            r(e);
+          }
+        });
+      }));
+
+      Promise.all(responses).then(
+        () => done(),
+        (e) => done(e)
+      );
     });
   });
 });
