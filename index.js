@@ -12,7 +12,9 @@ const coalesce = (concurrency, action) => {
       trie.delete(key);
     }
   }
-  return (key, value, callback) => {
+  return (user, callback) => {
+    const key = user.name;
+    const value = user.password;
     if (!trie.has(key)) {
       trie.set(key, new Map());
     }
@@ -26,7 +28,7 @@ const coalesce = (concurrency, action) => {
     }
     const callbacks = [callback];
     guesses.set(value, callbacks);
-    action(value, function () {
+    action(user, function () {
       // let bursts drain at same time
       // done over a timeout since calc is sync
       // we don't want .nextTick or setImmediate
@@ -90,24 +92,26 @@ module.exports = function (opts = {}) {
       || 'sha256';
 
     let checker;
-    const lookup = app.authboot.lookup = (lookupOpt || function ({ name, password }, callback) {
-      const hashBuffer = users.get(name);
-      if (!hashBuffer) {
-        debug(`unknown username ${name}`);
-        return callback(null, false);
-      }
-      checker = checker || coalesce(concurrency, (password, done) => {
+    const lookup = app.authboot.lookup = (lookupOpt || function (user, callback) {
+      checker = checker || coalesce(concurrency, ({ name, password }, done) => {
+        const hashBuffer = users.get(name);
+        if (!hashBuffer) {
+          debug(`unknown username ${name}`);
+          return callback(null, false);
+        }
         const passwordHash = crypto.createHash(algorithm);
         passwordHash.update(password);
         const digest = passwordHash.digest();
         const equal = crypto.timingSafeEqual(digest, hashBuffer);
         done(null, equal);
       });
-      checker(name, password, callback);
+      checker(user, callback);
     });
 
     app.authboot.middleware = authMiddleware({
-      authorizer: (name, password, cb) => lookup({ name, password }, cb),
+      authorizer: (name, password, cb) => {
+        lookup({ name, password }, cb);
+      },
       unauthorizedResponse,
       authorizeAsync: true,
       challenge,

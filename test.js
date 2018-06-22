@@ -75,20 +75,41 @@ describe('authboot.test', function () {
   });
 
   it('app.authboot.lookup by default should correctly validate from user object', function (done) {
-    const password = 'huh';
-    const hash = crypto.createHash('sha256');
-    hash.update(password);
-    const digest = hash.digest('hex');
-    authboot({ users: { what: digest  }})(app, {}, (err) => {
+    function digestPassword(password) {
+      const hash = crypto.createHash('sha256');
+      hash.update(password);
+      return hash.digest('hex');
+    }
+    authboot({ users: {
+      what: digestPassword('huh'),
+      when: digestPassword('umm')
+    }})(app, {}, (err) => {
       assume(err).is.falsey();
       assume(app.authboot.middleware).is.a('function');
       assume(app.authboot.lookup).is.a('function');
 
-      app.authboot.lookup({ name: 'what', password: 'huh' }, (err, valid) => {
-        assume(err).is.falsey();
-        assume(valid).is.truthy();
-        done();
-      });
+      const checks = [
+        { name: 'what', password: 'huh', valid: true },
+        { name: 'what', password: 'umm', valid: false },
+        { name: 'when', password: 'huh', valid: false },
+        { name: 'when', password: 'umm', valid: true }
+      ];
+
+      return next();
+      function next() {
+        if (checks.length === 0) {
+          return done();
+        }
+        const check = checks.shift();
+        app.authboot.lookup({
+          name: check.name,
+          password: check.password
+        }, (err, valid) => {
+          assume(err).is.falsey();
+          assume(valid).equals(check.valid);
+          next();
+        });
+      }
     });
   });
 
