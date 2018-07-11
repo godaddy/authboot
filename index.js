@@ -97,12 +97,13 @@ module.exports = function (opts = {}) {
         const hashBuffer = users.get(name);
         if (!hashBuffer) {
           debug(`unknown username ${name}`);
-          return callback(null, false);
+          return done(null, false);
         }
         const passwordHash = crypto.createHash(algorithm);
         passwordHash.update(password);
         const digest = passwordHash.digest();
-        const equal = crypto.timingSafeEqual(digest, hashBuffer);
+        const equal = digest.byteLength === hashBuffer.byteLength &&
+          crypto.timingSafeEqual(digest, hashBuffer);
         done(null, equal);
       });
       checker(user, callback);
