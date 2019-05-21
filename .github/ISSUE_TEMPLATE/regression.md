@@ -37,5 +37,5 @@ Stopped working in version:
 
 ## Environment
 <!--
-  Describe the environment and provide any configuration you've used to run Warehouse.
+  Describe the environment and provide any configuration.
 -->
