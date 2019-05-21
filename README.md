@@ -24,36 +24,6 @@ will cover below.
 npm install authboot --save
 ```
 
-## API
-
-### `users` - Object
-
-The `users` object we give contains assumptions if you are not passing in your
-own `lookup` function. Those assumptions is that that each `key` must be the
-username for your authorized users while the value must be a
-[`hexidecimal`][hexidecimal] encoding of the [`sha256`][sha256] hash of the
-password. This ensures we are following security best practices even
-when this information is loaded in memory from an encrypted config.
-
-### `lookup({ name, password }, callback)`
-
-Function to override the default behavior of using the `users` object as
-a direct comparison map for who is authorized and using the provided algorithm
-to compare the given password with the `hash` we have stored as part of
-the `users` object.
-
-### `challenge` Boolean
-
-Indicating whether we will send a challenge response for browser based requests.
-
-### `realm` String
-
-The realm given for the service for browser storage of basic auth.
-
-### `algorithm` String
-
-The algorithm given to `crypto` when creating a `hash`.
-
 ## Usage
 
 ### Example #1
@@ -126,6 +96,36 @@ module.exports = function (app, options, callback) {
 };
 
 ```
+
+## API
+
+### `users` - Object
+
+The `users` object we give contains assumptions if you are not passing in your
+own `lookup` function. Those assumptions is that that each `key` must be the
+username for your authorized users while the value must be a
+[`hexidecimal`][hexidecimal] encoding of the [`sha256`][sha256] hash of the
+password. This ensures we are following security best practices even
+when this information is loaded in memory from an encrypted config.
+
+### `lookup({ name, password }, callback)`
+
+Function to override the default behavior of using the `users` object as
+a direct comparison map for who is authorized and using the provided algorithm
+to compare the given password with the `hash` we have stored as part of
+the `users` object.
+
+### `challenge` Boolean
+
+Indicating whether we will send a challenge response for browser based requests.
+
+### `realm` String
+
+The realm given for the service for browser storage of basic auth.
+
+### `algorithm` String
+
+The algorithm given to `crypto` when creating a `hash`.
 
 ## Test
 
