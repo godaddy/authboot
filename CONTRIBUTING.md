@@ -99,7 +99,7 @@ contribution. Generally speaking, Git handles attribution automatically.
 
 ## Code Documentation
 
-Ensure that every function in `warehouse.ai` is documented and follows the
+Ensure that every function in this project is documented and follows the
 standards set by [JSDoc]. Finally, please stick to the code style as defined
 by the [Godaddy JS styleguide][style].
 
