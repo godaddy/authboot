@@ -1,7 +1,7 @@
 # `authboot`
 
 [![Version npm](https://img.shields.io/npm/v/authboot.svg?style=flat-square)](https://www.npmjs.com/package/authboot)
-[![License](https://img.shields.io/npm/l/wrhs.svg?style=flat-square)](https://github.com/warehouseai/authboot/blob/master/LICENSE)
+[![License](https://img.shields.io/npm/l/authboot.svg?style=flat-square)](https://github.com/warehouseai/authboot/blob/master/LICENSE)
 [![npm Downloads](https://img.shields.io/npm/dm/authboot.svg?style=flat-square)](https://npmcharts.com/compare/authboot?minimal=true)
 [![Build Status](https://travis-ci.org/warehouseai/authboot.svg?branch=master)](https://travis-ci.org/warehouseai/authboot)
 [![Dependencies](https://img.shields.io/david/warehouseai/authboot.svg?style=flat-square)](https://github.com/warehouseai/authboot/blob/master/package.json)
