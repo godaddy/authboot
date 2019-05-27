@@ -1,53 +1,30 @@
-# authboot
+# `authboot`
 
+[![Version npm](https://img.shields.io/npm/v/authboot.svg?style=flat-square)](https://www.npmjs.com/package/authboot)
+[![License](https://img.shields.io/npm/l/authboot.svg?style=flat-square)](https://github.com/warehouseai/authboot/blob/master/LICENSE)
+[![npm Downloads](https://img.shields.io/npm/dm/authboot.svg?style=flat-square)](https://npmcharts.com/compare/authboot?minimal=true)
 [![Build Status](https://travis-ci.org/warehouseai/authboot.svg?branch=master)](https://travis-ci.org/warehouseai/authboot)
+[![Dependencies](https://img.shields.io/david/warehouseai/authboot.svg?style=flat-square)](https://github.com/warehouseai/authboot/blob/master/package.json)
 
-A simple [`slay`][slay] preboot that initializes an `authboot` namespaced `lookup` function
-and `middeware` on the app object to be used within the application. Its meant
-to wrap up some configuration conventions to be more easily reused in multiple
-slay applications without duplicating code unnecessarily.
+A simple [`slay`][slay] preboot that initializes an `authboot` namespaced
+`lookup` function and `middeware` on the app object to be used within the
+application. Its meant to wrap up some configuration conventions to be more
+easily reused in multiple slay applications without duplicating code
+unnecessarily.
 
-The purpose of this library is to simply wrap an auth middleware (currently basic-auth based)
-and give a mechanism for async validation of that auth. We support
-properties of `express-basic-auth` as configuration. The `lookup` function
-replaces the authorizer function with a slightly tweaked API which we will cover
-below.
+The purpose of this library is to simply wrap an auth middleware (currently
+basic-auth based) and give a mechanism for async validation of that auth. We
+support properties of `express-basic-auth` as configuration. The `lookup`
+function replaces the authorizer function with a slightly tweaked API which we
+will cover below.
 
-## install
+## Install
 
 ```sh
 npm install authboot --save
 ```
 
-## API
-
-### `users` - Object
-
-The `users` object we give contains assumptions if you are not passing in your
-own `lookup` function. Those assumptions is that that each `key` must be the
-username for your authorized users while the value must be a [`hexidecimal`][hexidecimal] encoding of the [`sha256`][sha256] hash of the password. This ensures we are following security best practices even
-when this information is loaded in memory from an encrypted config.
-
-### `lookup({ name, password }, callback)`
-
-Function to override the default behavior of using the `users` object as
-a direct comparison map for who is authorized and using the provided algorithm to
-compare the given password with the `hash` we have stored as part of the `users`
-object.
-
-### `challenge` Boolean
-
-Indicating whether we will send a challenge response for browser based requests.
-
-### `realm` String
-
-The realm given for the service for browser storage of basic auth.
-
-### `algorithm` String
-
-The algorithm given to `crypto` when creating a `hash`.
-
-## usage
+## Usage
 
 ### Example #1
 ```js
@@ -120,7 +97,37 @@ module.exports = function (app, options, callback) {
 
 ```
 
-## test
+## API
+
+### `users` - Object
+
+The `users` object we give contains assumptions if you are not passing in your
+own `lookup` function. Those assumptions is that that each `key` must be the
+username for your authorized users while the value must be a
+[`hexidecimal`][hexidecimal] encoding of the [`sha256`][sha256] hash of the
+password. This ensures we are following security best practices even
+when this information is loaded in memory from an encrypted config.
+
+### `lookup({ name, password }, callback)`
+
+Function to override the default behavior of using the `users` object as
+a direct comparison map for who is authorized and using the provided algorithm
+to compare the given password with the `hash` we have stored as part of
+the `users` object.
+
+### `challenge` Boolean
+
+Indicating whether we will send a challenge response for browser based requests.
+
+### `realm` String
+
+The realm given for the service for browser storage of basic auth.
+
+### `algorithm` String
+
+The algorithm given to `crypto` when creating a `hash`.
+
+## Test
 
 ```sh
 npm test
